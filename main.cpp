@@ -28,7 +28,9 @@
 using namespace std;
 unsigned char image [SIZE][SIZE];
 unsigned char image2[SIZE][SIZE];
-unsigned char newimage[128][128];
+unsigned char newimage2[128][128];
+unsigned char newimage3[86][86];
+unsigned char newimage4[64][64];
 
 
 
@@ -61,36 +63,38 @@ void selection_menu()
     char filter = '1';
 
 
-    while (filter != '0')
-    {
+    while (filter != '0') {
         loadImage();
 
-        cout <<"Please select a filter to apply or 0 to exit:"<<endl;
-        cout << "1.Invert filter \n"<<"2.Rotate image \n";
-        cout << "3.Merger image \n"<<"4.Darken/Lighten image \n";
-        cout << "5.Black_White_Image \n"<<"6.Flip_Image \n"<< "9.Shrink image\n" << "c.Blur image\n" << "0.exit \n";
+        cout << "Please select a filter to apply or 0 to exit:" << endl;
+        cout << "1.Invert filter \n" << "2.Rotate image \n";
+        cout << "3.Merger image \n" << "4.Darken/Lighten image \n";
+        cout << "5.Black_White_Image \n" << "6.Flip_Image \n" << "9.Shrink image\n" << "c.Blur image\n" << "0.exit \n";
         cin >> filter;
 
-        if 		(filter == '1' )
+        if (filter == '1')
             Invert_Filter();
-        else if (filter == '2' )
-            Rotate_Image ();
+        else if (filter == '2')
+            Rotate_Image();
         else if (filter == '3')
-            merger ();
-        else if (filter == '4' )
-            darkLight ();
-        else if (filter == '5' )
-            Black_White_Image () ;
-        else if (filter == '6' )
-            Flip () ;
+            merger();
+        else if (filter == '4')
+            darkLight();
+        else if (filter == '5')
+            Black_White_Image();
+        else if (filter == '6')
+            Flip();
         else if (filter == '9')
             shrink();
         else if (filter == 'c')
             blur();
-        else if (filter == '0')
-            cout << "M3 elsalamh ya user ya habibi \n"  ;
+        else if (filter == '0') {
+            cout << "M3 elsalamh ya user ya habibi \n";
+            break;
+        }
+
         saveImage();
-        break;
+
 
     }
 
@@ -299,27 +303,53 @@ void shrink() {
     cout << "Please input your choice as 3 if you want the dimensions to be 1/3, \n";
     cout << "Please input your choice as 4 if you want the dimensions to be 1/4, \n";
     cin >> choice;
-    if ((choice != 1) && (choice != 2) && (choice != 3)) {
+    if ((choice != 2) && (choice != 3) && (choice != 4)) {
         cout << "Invalid entry.";
     }
     else {
-
-        int x = 0, y=0;
-        for (int i = 0; i < SIZE; i+=choice) {
-            for (int j = 0; j < SIZE; j+=choice) {
-                newimage[x][y] = image[i][j];
-                x++;
+            int x=0,y=0;
+            for (int i = 0; i < SIZE; i+=choice) {
+                for (int j = 0; j < SIZE; j+=choice) {
+                    if (choice==2){
+                        newimage2[x][y] = image[i][j];
+                    }
+                    if (choice==3){
+                        newimage3[x][y] = image[i][j];
+                    }
+                    if (choice==4){
+                        newimage4[x][y] = image[i][j];
+                    }
+                    y++;
+                }
             }
-            y++; // error in this, I'll fix it later.
+
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
+                image[i][j]=255;
+
+            }
         }
+            for (int i = 0; i < SIZE/choice; i++) {
+                for (int j = 0; j < SIZE/choice; j++) {
+                    if (choice==2){
+                        image[i][j] = newimage2[i][j];
+                    }
+                    if (choice==3){
+                        image[i][j] = newimage3[i][j];
+                    }
+                    if (choice==4){
+                        image[i][j] = newimage4[i][j];
+                    }
+                }
+            }
     }
     }
 
 void blur() {
-    for (int i = 0; i < SIZE; i++) {
-        for (int j = 0; j < SIZE; j++) {
-            image[i][j] = (0.125)*( (image[i][j+1]) + (image[i][j-1]) + (image[i+1][j]) +(image[i+1][j+1]) + (image[i][j-1])
-                    + (image[i-1][j]) + (image[i-1][j+1]) + (image[i-1][j-1]) );
+    for (int i = 1; i < SIZE-1; i++) {
+        for (int j = 1; j < SIZE-1; j++) {
+            image[i][j] = ( image[i][j] + image[i][j+1] + image[i][j-1] + image[i+1][j] +image[i+1][j+1] +
+                    + image[i-1][j-1] + image[i-1][j+1] + image[i-1][j-1] + image[i-1][j] ) / 9;
 
         }
     }

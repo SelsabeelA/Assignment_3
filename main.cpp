@@ -1,4 +1,3 @@
-
 /***************************************************************
  Purpose: Invert and rotate (90,180,270) grayscale images.
  Purpose: Merge and darken/ligthen grayscale images.
@@ -13,7 +12,6 @@
 
  Author:  Selsabeel Asim Ali Elbagir
  ID: 20210714
-
 
  Section: S1 & S2
  Date:    17 April 2022
@@ -47,6 +45,8 @@ void FlipVertical();
 void selection_menu();
 void shrink();
 void blur();
+void Mirror();
+void EdgeDetective();
 //_________________________________________
 
 int main()
@@ -66,26 +66,38 @@ void selection_menu()
     while (filter != '0') {
         loadImage();
 
-        cout << "Please select a filter to apply or 0 to exit:" << endl;
-        cout << "1.Invert filter \n" << "2.Rotate image \n";
-        cout << "3.Merger image \n" << "4.Darken/Lighten image \n";
-        cout << "5.Black_White_Image \n" << "6.Flip_Image \n" << "9.Shrink image\n" << "c.Blur image\n" << "0.exit \n";
+        cout <<"Please select a filter to apply or 0 to exit:" << endl;
+        cout << "1.Black & White Image.\n" << "2.Invert Image.\n"
+             << "3.Merge Images.\n"        << "4.Flip Image.\n"
+             << "5.Rotate Image.\n"        << "6.Darken and Lighten Image.\n"
+             << "7.Detect Image Edges.\n"  << "8.Enlarge Image.\n"
+             << "9.Shrink Image.\n"        << "a.Mirror Image.\n"
+             << "b.Shuffle Image.\n"       << "c.Blur Image.\n"
+             <<"0.exit.\n";
         cin >> filter;
 
         if (filter == '1')
-            Invert_Filter();
+            Black_White_Image ();
         else if (filter == '2')
-            Rotate_Image();
+            Invert_Filter();
         else if (filter == '3')
             merger();
         else if (filter == '4')
-            darkLight();
-        else if (filter == '5')
-            Black_White_Image();
-        else if (filter == '6')
             Flip();
+        else if (filter == '5')
+            Rotate_Image();
+        else if (filter == '6')
+            darkLight();
+        else if (filter == '7'){
+            EdgeDetective();
+            continue;
+        }
+        else if (filter == '8')
+            ;
         else if (filter == '9')
             shrink();
+        else if (filter == 'a')
+            Mirror();
         else if (filter == 'c')
             blur();
         else if (filter == '0') {
@@ -354,3 +366,81 @@ void blur() {
         }
     }
 }
+//_________________________________________
+void Mirror(){
+    cout << "Mirror (l)eft, (r)ight, (u)pper, (d)own side?" << endl;
+    char option;
+    cin >> option;
+    if(option == 'l'){
+      for (int i = 0; i < (SIZE); i++) {
+        for (int j = 0; j< SIZE/2; j++) {
+          image[i][j] = image[i][SIZE - j];
+        }
+      }
+    }
+    else if(option == 'r'){
+      for (int i = 0; i < (SIZE); i++) {
+        for (int j = 0; j< SIZE/2; j++) {
+          image[i][SIZE - j] = image[i][j];
+        }
+      }
+    }
+    else if(option == 'u'){
+      for (int i = 0; i < (SIZE/2); i++) {
+        for (int j = 0; j< SIZE; j++) {
+          image[i][j] = image[SIZE - i][j];
+        }
+      }
+    }
+    else if(option == 'd'){
+      for (int i = 0; i < (SIZE/2); i++) {
+        for (int j = 0; j< SIZE; j++) {
+          image[SIZE - i][j] = image[i][j];
+        }
+      }
+    }
+
+}
+//_________________________________________
+void EdgeDetective (){
+    long sum = 0;
+    double avg = 0;
+    for (int i = 0; i < SIZE; i++) {
+      for (int j = 0; j< SIZE; j ++) {
+        if (image[i][j] > 128)
+            image[i][j] = 255;
+        else
+            image[i][j] = 0;
+        }
+      }
+    for(int i = 0; i < SIZE; i++){
+      for(int j = 0; j < (SIZE - 1); j++){
+        if(image[i][j] == 255){
+          if(image[i][j] != image[i][j + 1]){
+            image2[i][j] = 255;
+            image2[i][j + 1] = 0;
+            j += 1;
+          }
+          else if(image[i][j] == image[i][j + 1])
+            image2[i][j] = 255;
+        }
+        else if(image[i][j] == 0){
+          if((image[i][j] == image[i][j + 1]) && (image[i][j] == image[i - 1][j]) && (image[i][j] == image[i + 1][j])){
+            image2[i][j] = 255;
+          }
+          else
+            image2[i][j] = 0;
+        }
+      }
+    }
+    char imageFileName[100];
+
+    // Get gray scale image target file name
+    cout << "Enter the target image file name: ";
+    cin >> imageFileName;
+
+    // Add to it .bmp extension and load image
+    strcat (imageFileName, ".bmp");
+    writeGSBMP(imageFileName, image2);
+}
+//_________________________________________

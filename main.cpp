@@ -98,6 +98,8 @@ void selection_menu()
             shrink();
         else if (filter == 'a')
             Mirror();
+        else if (filter == 'b')
+            ;
         else if (filter == 'c')
             blur();
         else if (filter == '0') {
@@ -355,8 +357,8 @@ void shrink() {
                 }
             }
     }
-    }
-
+}
+//_________________________________________
 void blur() {
     for (int i = 1; i < SIZE-1; i++) {
         for (int j = 1; j < SIZE-1; j++) {

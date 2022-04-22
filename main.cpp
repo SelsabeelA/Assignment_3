@@ -1,8 +1,9 @@
 /***************************************************************
- Purpose: Invert and rotate (90,180,270) grayscale images.
- Purpose: Merge and darken/ligthen grayscale images.
- Purpose: Flip and black/white grayscale images.
- Program load a gray image and store in another file
+Purpose: Invert, rotate (90,180,270), Flip, Merge, Enlarge,
+ Shuffle, Shrink(1/2 dimension,1/3 dimension, 1/4 dimension), Blur, Darken&lighten, Detect Edges, Black&White RGB images.
+ The program loads a gray image image, gives the user an option of
+ 12 functions, each that gives a different filter effect, and then saves it 
+ to a new image (in the same program's file directory) that the user chooses the name of.
 
  Author:  Abdullah Mohammed Abdullah Farg
  ID: 20210541
@@ -64,7 +65,7 @@ void selection_menu()
 {
 
 
-    char filter = '1';
+    char filter = '1'; // this ensures the selection menu loops for the user from the start
 
 
     while (filter != '0') {
@@ -218,17 +219,20 @@ void Invert_Filter()
 void merger() {
     char imageFileName2[100];
     // Get gray scale image file name
-    cout << "Enter the source image file name: ";
+    cout << "Enter the source image file name of what you'd like to merge with: ";
     cin >> imageFileName2;
 
     // Add to it .bmp extension and load image
     strcat (imageFileName2, ".bmp");
     readGSBMP(imageFileName2, image2);
+// since we need two images for merge to occur, we ask the user to input a file name and then read the filename.bmp
 
 
     for (int i = 0; i < SIZE; i++) {
         for (int j = 0; j< SIZE; j++) {
             image[i][j] = 0.5*( image[i][j] + image2[i][j] );
+		// this takes the average of both images
+
         }
     }
 
@@ -236,19 +240,22 @@ void merger() {
 //_________________________________________
 void darkLight() {
     char choice;
-    cout << "Do you want to (d)arken or (l)ighten?";
+    cout << "Do you want to (d)arken or (l)ighten?\n";
+    cout << "Please enter d or l.\n";
     cin >> choice;
     if (choice=='d'){
         for (int i = 0; i < SIZE; i++) {
             for (int j = 0; j< SIZE; j++) {
-                image[i][j] *= 0.5;
+                image[i][j] *= 0.5; // halving the value of each pixel to make it closer to 0 (black)
             }
         }
     }
-    if (choice=='l'){
+    else if (choice=='l'){
         for (int i = 0; i < SIZE; i++) {
             for (int j = 0; j< SIZE; j++) {
                 image[i][j] = 0.5*(image[i][j]+SIZE);
+		    // taking the average of the value of each pixel with white (255/SIZE) to make it closer to 255 (white)
+		    // we can't multiply by 2 because that would give a value greater than 255 at times.
             }
 
         }
@@ -327,36 +334,36 @@ void shrink() {
     else {
             int x=0,y=0;
             for (int i = 0; i < SIZE; i+=choice) {
-                for (int j = 0; j < SIZE; j+=choice) {
+                for (int j = 0; j < SIZE; j+=choice) { // this loops through the entire image pixel by pixel, skipping every 2/3/4 pixels
                     if (choice==2){
-                        newimage2[x][y] = image[i][j];
+                        newimage2[x][y] = image[i][j]; //saves the original image to an image half the original size
                     }
                     if (choice==3){
-                        newimage3[x][y] = image[i][j];
+                        newimage3[x][y] = image[i][j]; //saves the original image to an image one third the original size
                     }
                     if (choice==4){
-                        newimage4[x][y] = image[i][j];
+                        newimage4[x][y] = image[i][j]; //saves the original image to an image quarter the original size
                     }
                     y++;
                 }
             }
 
         for (int i = 0; i < SIZE; i++) {
-            for (int j = 0; j < SIZE; j++) {
-                image[i][j]=255;
+            for (int j = 0; j < SIZE; j++) { // this loops through the entire image pixel by pixel
+                image[i][j]=255; // makes the original image all white so that we can overwrite the smaller image on top of it
 
             }
         }
             for (int i = 0; i < SIZE/choice; i++) {
-                for (int j = 0; j < SIZE/choice; j++) {
+                for (int j = 0; j < SIZE/choice; j++) { // this loops through the entire image pixel by pixel
                     if (choice==2){
-                        image[i][j] = newimage2[i][j];
+                        image[i][j] = newimage2[i][j]; //overwriting the smaller image half the original size on top
                     }
                     if (choice==3){
-                        image[i][j] = newimage3[i][j];
-                    }
+                        image[i][j] = newimage3[i][j]; // also overwriting here but for 1/3 dimension
+                    } 
                     if (choice==4){
-                        image[i][j] = newimage4[i][j];
+                        image[i][j] = newimage4[i][j]; // also overwriting here but for 1/4 dimension
                     }
                 }
             }
@@ -365,9 +372,10 @@ void shrink() {
 
 void blur() {
     for (int i = 1; i < SIZE-1; i++) {
-        for (int j = 1; j < SIZE-1; j++) {
+        for (int j = 1; j < SIZE-1; j++) { // loops through each image pixel by pixel
             image[i][j] = ( image[i][j] + image[i][j+1] + image[i][j-1] + image[i+1][j] +image[i+1][j+1] +
-                    + image[i-1][j-1] + image[i-1][j+1] + image[i-1][j-1] + image[i-1][j] ) / 9;
+                    + image[i+1][j-1] + image[i-1][j+1] + image[i-1][j-1] + image[i-1][j] ) / 9;
+		// takes the average of all the pixels around the pixel itself, including the pixel itself
 
         }
     }

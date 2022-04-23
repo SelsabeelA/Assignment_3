@@ -42,8 +42,6 @@ void merger ();
 void darkLight ();
 void Black_White_Image () ;
 void Flip ();
-void FlipHrizontal();
-void FlipVertical();
 void selection_menu();
 void shrink();
 void blur();
@@ -78,7 +76,7 @@ void selection_menu()
              << "7.Detect Image Edges.\n"  << "8.Enlarge Image.\n"
              << "9.Shrink Image.\n"        << "a.Mirror Image.\n"
              << "b.Shuffle Image.\n"       << "c.Blur Image.\n"
-             <<"0.exit.\n";
+             << "0.exit.\n";
         cin >> filter;
 
         if (filter == '1')
@@ -163,7 +161,6 @@ void Rotate_Image()
             {
 
                 image[i][j] =  image[j-256][i-32];      //Rotate 90
-
 
             }
 
@@ -277,47 +274,42 @@ void Black_White_Image ()
         }
     }
     avg = sum / (SIZE * SIZE);
+    //loop through the image pixel by pixel
     for (int i = 0; i < SIZE; i++) {
         for (int j = 0; j< SIZE; j++) {
-
-
-
+            //check the value of the pixel
             if (image[i][j] > avg)
-                image[i][j] = 255;
+                image[i][j] = 255; //turn pixel to white
             else
-                image[i][j] = 0;
-
-        }
-    }
-}
-//_________________________________________
-void FlipHrizontal() {
-    for (int i = 0; i < SIZE; i++) {
-        for (int j = 0; j< (SIZE/2); j++) {
-            swap(image[i][j] , image[i][SIZE - j]);
-
-        }
-    }
-}
-//_________________________________________
-void FlipVertical(){
-    for (int i = 0; i < (SIZE/2); i++) {
-        for (int j = 0; j< SIZE; j++) {
-            swap(image[i][j] , image[SIZE - i][j]);
+                image[i][j] = 0; //turn pixel to Black
 
         }
     }
 }
 //_________________________________________
 void Flip (){
+    //display and take the option
     cout << "Flip (h)orizontally or (v)ertically ? " << endl;
     char option;
     cin >> option;
+    //make changes according to the option
     if(option == 'h'){
-        FlipHrizontal();
+      //loop through the left half of the image
+      for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j< (SIZE/2); j++) {
+            swap(image[i][j] , image[i][SIZE - j]); //swap pixel by another one
+
+        }
+      }
     }
     else if(option == 'v'){
-        FlipVertical();
+      //loop through the upper half of the image
+      for (int i = 0; i < (SIZE/2); i++) {
+        for (int j = 0; j< SIZE; j++) {
+            swap(image[i][j] , image[SIZE - i][j]); //swap pixel by another one
+
+        }
+      }
     }
 }
 //_________________________________________
@@ -369,7 +361,7 @@ void shrink() {
             }
     }
     }
-
+//_________________________________________
 void blur() {
     for (int i = 1; i < SIZE-1; i++) {
         for (int j = 1; j < SIZE-1; j++) { // loops through each image pixel by pixel
@@ -382,80 +374,77 @@ void blur() {
 }
 //_________________________________________
 void Mirror(){
+    //display and take the options
     cout << "Mirror (l)eft, (r)ight, (u)pper, (d)own side?" << endl;
     char option;
     cin >> option;
+    //make changes according to the optoin
     if(option == 'l'){
+      //loop through the left half of the image
       for (int i = 0; i < (SIZE); i++) {
         for (int j = 0; j< SIZE/2; j++) {
-          image[i][j] = image[i][SIZE - j];
+          image[i][j] = image[i][SIZE - j]; //mirror the pixel by another
         }
       }
     }
     else if(option == 'r'){
+      //loop through the left half of the image
       for (int i = 0; i < (SIZE); i++) {
         for (int j = 0; j< SIZE/2; j++) {
-          image[i][SIZE - j] = image[i][j];
+          image[i][SIZE - j] = image[i][j]; //mirror the pixel by another
         }
       }
     }
     else if(option == 'u'){
+      //loop through the upper half of the image
       for (int i = 0; i < (SIZE/2); i++) {
         for (int j = 0; j< SIZE; j++) {
-          image[i][j] = image[SIZE - i][j];
+          image[i][j] = image[SIZE - i][j]; //mirror the pixel by another
         }
       }
     }
     else if(option == 'd'){
+      //loop through the upper half of the image
       for (int i = 0; i < (SIZE/2); i++) {
         for (int j = 0; j< SIZE; j++) {
-          image[SIZE - i][j] = image[i][j];
+          image[SIZE - i][j] = image[i][j]; //mirror the pixel by another
         }
       }
     }
-
 }
 //_________________________________________
 void EdgeDetective (){
     long sum = 0;
     double avg = 0;
-    for (int i = 0; i < SIZE; i++) {
-      for (int j = 0; j< SIZE; j ++) {
-        if (image[i][j] > 128)
-            image[i][j] = 255;
-        else
-            image[i][j] = 0;
-        }
-      }
+    //turn the image to Black & white
+    Black_White_Image();
+    //loop through the image pixel by pixel
     for(int i = 0; i < SIZE; i++){
       for(int j = 0; j < (SIZE - 1); j++){
+        //check if the pixel is white
         if(image[i][j] == 255){
+            //check if the pixel is not equal the next one
           if(image[i][j] != image[i][j + 1]){
-            image2[i][j] = 255;
-            image2[i][j + 1] = 0;
+            image2[i][j] = 255; //make the pixel in image2 white
+            image2[i][j + 1] = 0; //make the next pixel in image2 Black
             j += 1;
           }
+          //check if the pixel is not equal the next one
           else if(image[i][j] == image[i][j + 1])
-            image2[i][j] = 255;
+            image2[i][j] = 255; //make the pixel in image2 white
         }
+        //check if the pixel is Black
         else if(image[i][j] == 0){
+          //check if the pixel is not equal to the neighbors
           if((image[i][j] == image[i][j + 1]) && (image[i][j] == image[i - 1][j]) && (image[i][j] == image[i + 1][j])){
-            image2[i][j] = 255;
+            image2[i][j] = 255; //make the pixel in image2 white
           }
           else
-            image2[i][j] = 0;
+            image2[i][j] = 0; //make the pixel in image2 Black
         }
       }
     }
-    char imageFileName[100];
-
-    // Get gray scale image target file name
-    cout << "Enter the target image file name: ";
-    cin >> imageFileName;
-
-    // Add to it .bmp extension and load image
-    strcat (imageFileName, ".bmp");
-    writeGSBMP(imageFileName, image2);
+  saveImage2();
 }
 //_________________________________________
 void Enlarge_Image()

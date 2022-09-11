@@ -5,16 +5,12 @@ Purpose: Invert, rotate (90,180,270), Flip, Merge, Enlarge,
  12 functions, each that gives a different filter effect, and then saves it
  to a new image (in the same program's file directory) that the user chooses the name of.
 
- Author:  Abdullah Mohammed Abdullah Farg
- ID: 20210541
+ Author:  Abdullah M.
 
- Author:  Adham Mohamed sayed Allam
- ID: 20210053
+ Author:  Adham M.
 
- Author:  Selsabeel Asim Ali Elbagir
- ID: 20210714
+ Author:  Selsabeel A.
 
- Section: S1 & S2
  Date:    17 April 2022
  Version: 2.0
 ****************************************************************/
